@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Leon Dawkins Cafe</title>
+    <style>
+        :root {
+            --slate-900: #0f172a;
+            --slate-700: #334155;
+            --slate-600: #475569;
+            --slate-500: #64748b;
+            --slate-300: #cbd5e1;
+            --slate-200: #e2e8f0;
+            --slate-100: #f1f5f9;
+            --green-700: #15803d;
+            --green-100: #dcfce7;
+            --yellow-500: #eab308;
+            --red-700: #b91c1c;
+            --red-100: #fee2e2;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8fafc;
+            color: var(--slate-900);
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .admin-navbar {
+            background-color: var(--slate-900);
+            color: white;
+            padding: 18px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .admin-navbar h1 {
+            font-size: 22px;
+            margin: 0;
+        }
+
+        .admin-nav-links {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .admin-nav-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .admin-nav-links a:hover { color: white; }
+
+        .admin-main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 28px;
+        }
+
+        .dashboard-title {
+            margin-bottom: 6px;
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .dashboard-subtitle {
+            color: var(--slate-500);
+            margin-bottom: 24px;
+        }
+
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            padding: 22px;
+            border-radius: 14px;
+            border: 1px solid var(--slate-200);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+
+        .stat-card-label {
+            color: var(--slate-500);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card-value {
+            font-size: 30px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin: 0;
+        }
+
+        .stat-card-value.revenue { color: var(--green-700); }
+
+        .table-container {
+            background: #ffffff;
+            border: 1px solid var(--slate-200);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 22px;
+            border-bottom: 1px solid var(--slate-200);
+        }
+
+        .table-header h2 { margin: 0; font-size: 19px; }
+
+        .status-filter {
+            padding: 8px 12px;
+            border: 1px solid var(--slate-300);
+            border-radius: 8px;
+            font: inherit;
+            font-size: 13px;
+            color: var(--slate-700);
+            background: #fff;
+        }
+
+        .table-scroll { overflow-x: auto; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th, td {
+            padding: 13px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--slate-200);
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: var(--slate-100);
+            color: var(--slate-600);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 800;
+        }
+
+        tbody tr:hover { background-color: #f8fafc; }
+
+        .order-id {
+            font-family: monospace;
+            font-weight: 700;
+            color: var(--slate-700);
+            white-space: nowrap;
+        }
+
+        .amount-cell {
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status-badge.paid, .status-badge.preparing, .status-badge.ready, .status-badge.completed {
+            background-color: var(--green-100);
+            color: var(--green-700);
+        }
+
+        .status-badge.pending-payment {
+            background-color: #fef9c3;
+            color: #854d0e;
+        }
+
+        .status-badge.payment-failed, .status-badge.cancelled {
+            background-color: var(--red-100);
+            color: var(--red-700);
+        }
+
+        .empty-row {
+            text-align: center;
+            padding: 48px 20px;
+            color: var(--slate-500);
+        }
+
+        .refresh-btn {
+            border: 1px solid var(--slate-300);
+            color: var(--slate-700);
+            background: #fff;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .refresh-btn:hover { background: var(--slate-100); }
+
+        @media (max-width: 640px) {
+            .admin-main { padding: 18px 14px; }
+            .admin-navbar { padding: 16px; }
+            .dashboard-title { font-size: 22px; }
+            .stat-card-value { font-size: 25px; }
+            .table-header { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="admin-navbar">
+        <h1>📊 Leon Dawkins Cafe Admin</h1>
+        <nav class="admin-nav-links" aria-label="Admin navigation">
+            <a href="/">Customer Menu</a>
+            <a href="/kitchen.html">Kitchen Display</a>
+        </nav>
+    </header>
+
+    <main class="admin-main">
+        <h2 class="dashboard-title">Financial & Order Dashboard</h2>
+        <p class="dashboard-subtitle">Real-time M-Pesa payments and order history for Leon Dawkins Cafe.</p>
+
+        <section class="dashboard-stats" aria-label="Today's restaurant performance">
+            <div class="stat-card">
+                <div class="stat-card-label">Total Revenue Today</div>
+                <p class="stat-card-value revenue" id="total-revenue">KSh 0</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-label">Successful Paid Orders</div>
+                <p class="stat-card-value" id="total-orders">0</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-label">Pending Payment Requests</div>
+                <p class="stat-card-value" id="pending-orders">0</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-label">Failed / Cancelled</div>
+                <p class="stat-card-value" id="failed-orders">0</p>
+            </div>
+        </section>
+
+        <section class="table-container" aria-label="Order history">
+            <div class="table-header">
+                <h2>Orders & Payment Tracking</h2>
+                <button type="button" class="refresh-btn" onclick="loadDashboard()">⟳ Refresh</button>
+            </div>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Table</th>
+                            <th>Customer</th>
+                            <th>Phone</th>
+                            <th>Amount</th>
+                            <th>Payment / Order Status</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-orders-table">
+                        <tr><td colspan="7" class="empty-row">Loading orders…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        let ordersById = new Map();
+        const socket = io();
+
+        socket.on('connect', () => loadDashboard());
+
+        socket.on('new_order', (order) => {
+            ordersById.set(order.id, order);
+            renderDashboard();
+        });
+
+        socket.on('order_status_updated', (order) => {
+            ordersById.set(order.id, order);
+            renderDashboard();
+        });
+
+        async function loadDashboard() {
+            try {
+                const response = await fetch('/api/orders');
+                const result = await response.json();
+                if (response.ok) {
+                    ordersById = new Map((result.orders || []).map(order => [order.id, order]));
+                    renderDashboard();
+                }
+            } catch (err) {
+                document.getElementById('admin-orders-table').innerHTML = '<tr><td colspan="7" class="empty-row">Could not load orders. Check your server connection.</td></tr>';
+            }
+        }
+
+        function renderDashboard() {
+            const orders = Array.from(ordersById.values()).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            const today = new Date().toDateString();
+            const todayOrders = orders.filter(o => new Date(o.createdAt).toDateString() === today);
+            const paid = todayOrders.filter(o => o.paymentStatus === 'Paid');
+            const revenue = paid.reduce((sum, o) => sum + Number(o.totalAmount || 0), 0);
+            const pendingCount = todayOrders.filter(o => o.status === 'Pending Payment').length;
+            const failedCount = todayOrders.filter(o => ['Payment Failed', 'Cancelled'].includes(o.status)).length;
+
+            document.getElementById('total-revenue').innerText = `KSh ${revenue.toLocaleString()}`;
+            document.getElementById('total-orders').innerText = String(paid.length);
+            document.getElementById('pending-orders').innerText = String(pendingCount);
+            document.getElementById('failed-orders').innerText = String(failedCount);
+
+            const tbody = document.getElementById('admin-orders-table');
+            if (!orders.length) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-row">No orders recorded yet. New orders will appear here.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = orders.map(order => {
+                const statusClass = String(order.status || '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                const time = order.createdAt ? new Date(order.createdAt).toLocaleString() : '—';
+                return `
+                    <tr>
+                        <td class="order-id">${escapeHtml(order.id)}</td>
+                        <td>Table ${escapeHtml(order.tableNumber)}</td>
+                        <td>${escapeHtml(order.customerName)}</td>
+                        <td>${escapeHtml(order.phoneNumber)}</td>
+                        <td class="amount-cell">KSh ${Number(order.totalAmount || 0).toLocaleString()}</td>
+                        <td><span class="status-badge ${statusClass}">${escapeHtml(order.status)}</span></td>
+                        <td>${escapeHtml(time)}</td>
+                    </tr>`;
+            }).join('');
+        }
+
+        function escapeHtml(value) {
+            return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+    </script>
+</body>
+</html>

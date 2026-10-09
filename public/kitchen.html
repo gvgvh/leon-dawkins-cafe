@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitchen Display - Leon Dawkins Cafe</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: #0b1120;
+            color: #f8fafc;
+            padding: 0;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        .kitchen-navbar {
+            background-color: #0f172a;
+            border-bottom: 2px solid #1e293b;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .kitchen-navbar h1 {
+            font-size: 24px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .kitchen-status-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .conn-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #1e293b;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .conn-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #ef4444;
+        }
+
+        .conn-dot.online {
+            background-color: #22c55e;
+            box-shadow: 0 0 8px #22c55e;
+        }
+
+        .kitchen-orders-count {
+            background-color: #eab308;
+            color: #000000;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 6px 14px;
+            border-radius: 8px;
+        }
+
+        .nav-back-link {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .nav-back-link:hover {
+            color: #ffffff;
+        }
+
+        .kitchen-container {
+            padding: 24px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .kitchen-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .empty-kitchen {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px 20px;
+            color: #64748b;
+        }
+
+        .empty-kitchen-icon {
+            font-size: 54px;
+            margin-bottom: 12px;
+        }
+
+        .ticket-card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-left: 8px solid #eab308;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            animation: slideIn 0.3s ease;
+        }
+
+        .ticket-card.preparing {
+            border-left-color: #3b82f6;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 12px;
+            margin-bottom: 14px;
+        }
+
+        .ticket-table {
+            font-size: 22px;
+            font-weight: 800;
+            color: #facc15;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ticket-time {
+            font-size: 13px;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        .ticket-meta {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 12px;
+        }
+
+        .ticket-items {
+            margin-bottom: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .ticket-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            background-color: #0f172a;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #283548;
+        }
+
+        .ticket-qty {
+            background-color: #eab308;
+            color: #000000;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 6px;
+            margin-right: 8px;
+            font-size: 14px;
+        }
+
+        .ticket-notes {
+            background-color: #450a0a;
+            border: 1px solid #991b1b;
+            color: #fecaca;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 14px;
+            line-height: 1.4;
+        }
+
+        .ticket-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .btn-kitchen {
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-kitchen:hover {
+            opacity: 0.9;
+        }
+
+        .btn-preparing {
+            background-color: #2563eb;
+            color: #ffffff;
+        }
+
+        .btn-ready {
+            background-color: #16a34a;
+            color: #ffffff;
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="kitchen-navbar">
+        <h1>🍳 Kitchen Display & Order Queue</h1>
+        <div class="kitchen-status-bar">
+            <span class="kitchen-orders-count" id="active-count">0 Orders Active</span>
+            <span class="conn-pill">
+                <span class="conn-dot" id="conn-dot"></span>
+                <span id="conn-text">Connecting...</span>
+            </span>
+            <a href="/" class="nav-back-link">&larr; Customer Menu</a>
+            <a href="/admin.html" class="nav-back-link">📊 Admin</a>
+        </div>
+    </header>
+
+    <main class="kitchen-container">
+        <div class="kitchen-grid" id="kitchen-orders">
+            <div class="empty-kitchen" id="empty-state">
+                <div class="empty-kitchen-icon">👨‍🍳</div>
+                <h2>Kitchen Queue is Clear</h2>
+                <p>New paid orders from QR tables will automatically ring and appear here in real time.</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const activeOrders = new Map();
+
+        // Audio notification bell using Web Audio API
+        function playChime() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const now = ctx.currentTime;
+                
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, now); // D5
+                osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); // A5
+
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.8);
+            } catch(e) {
+                console.log('Audio notification skipped');
+            }
+        }
+
+        // Socket connection state
+        socket.on('connect', () => {
+            document.getElementById('conn-dot').classList.add('online');
+            document.getElementById('conn-text').innerText = 'Live Feed Connected';
+            fetchExistingOrders();
+        });
+
+        socket.on('disconnect', () => {
+            document.getElementById('conn-dot').classList.remove('online');
+            document.getElementById('conn-text').innerText = 'Offline';
+        });
+
+        // Listen for new paid orders broadcasted from server
+        socket.on('new_order', (order) => {
+            if (!activeOrders.has(order.id)) {
+                activeOrders.set(order.id, order);
+                renderTicket(order);
+                playChime();
+                updateCounter();
+            }
+        });
+
+        // Listen for status changes
+        socket.on('order_status_updated', (updated) => {
+            if (updated.status === 'Ready' || updated.status === 'Completed') {
+                removeTicket(updated.id);
+            } else if (activeOrders.has(updated.id)) {
+                activeOrders.set(updated.id, updated);
+                const el = document.getElementById(`ticket-${updated.id}`);
+                if (el && updated.status === 'Preparing') {
+                    el.classList.add('preparing');
+                }
+            }
+        });
+
+        async function fetchExistingOrders() {
+            try {
+                const res = await fetch('/api/orders?status=active');
+                if (res.ok) {
+                    const data = await res.json();
+                    const container = document.getElementById('kitchen-orders');
+                    activeOrders.clear();
+                    
+                    if (data.orders && data.orders.length > 0) {
+                        container.innerHTML = '';
+                        data.orders.forEach(order => {
+                            activeOrders.set(order.id, order);
+                            renderTicket(order);
+                        });
+                    } else {
+                        showEmptyState();
+                    }
+                    updateCounter();
+                }
+            } catch (err) {
+                console.error('Failed to fetch existing kitchen orders:', err);
+            }
+        }
+
+        function renderTicket(order) {
+            const emptyEl = document.getElementById('empty-state');
+            if (emptyEl) emptyEl.remove();
+
+            const container = document.getElementById('kitchen-orders');
+            let ticket = document.getElementById(`ticket-${order.id}`);
+            if (ticket) return;
+
+            ticket = document.createElement('article');
+            ticket.className = `ticket-card ${order.status === 'Preparing' ? 'preparing' : ''}`;
+            ticket.id = `ticket-${order.id}`;
+
+            const itemsList = (order.items || []).map(i => `
+                <div class="ticket-item">
+                    <span><strong class="ticket-qty">${i.quantity}x</strong> ${escapeHtml(i.title)}</span>
+                </div>
+            `).join('');
+
+            const timeStr = order.createdAt ? new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Now';
+
+            ticket.innerHTML = `
+                <div>
+                    <div class="ticket-header">
+                        <span class="ticket-table">🍽️ Table #${escapeHtml(order.tableNumber)}</span>
+                        <span class="ticket-time">${timeStr}</span>
+                    </div>
+                    <div class="ticket-meta">
+                        Order <strong>${escapeHtml(order.id)}</strong> &bull; Guest: ${escapeHtml(order.customerName)}
+                    </div>
+                    <div class="ticket-items">
+                        ${itemsList}
+                    </div>
+                    ${order.notes ? `
+                        <div class="ticket-notes">
+                            <strong>Note:</strong> ${escapeHtml(order.notes)}
+                        </div>
+                    ` : ''}
+                </div>
+                <div class="ticket-actions">
+                    <button type="button" class="btn-kitchen btn-preparing" onclick="updateStatus('${order.id}', 'Preparing')">
+                        🍳 Preparing
+                    </button>
+                    <button type="button" class="btn-kitchen btn-ready" onclick="updateStatus('${order.id}', 'Ready')">
+                        ✅ Mark as Ready
+                    </button>
+                </div>
+            `;
+
+            container.prepend(ticket);
+        }
+
+        async function updateStatus(orderId, status) {
+            try {
+                const res = await fetch(`/api/orders/${encodeURIComponent(orderId)}/status`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status })
+                });
+
+                if (res.ok) {
+                    if (status === 'Ready') {
+                        removeTicket(orderId);
+                    } else if (status === 'Preparing') {
+                        const el = document.getElementById(`ticket-${orderId}`);
+                        if (el) el.classList.add('preparing');
+                    }
+                }
+            } catch (err) {
+                console.error('Error updating status:', err);
+            }
+        }
+
+        function removeTicket(orderId) {
+            activeOrders.delete(orderId);
+            const el = document.getElementById(`ticket-${orderId}`);
+            if (el) {
+                el.style.opacity = '0';
+                el.style.transform = 'scale(0.95)';
+                el.style.transition = 'all 0.25s ease';
+                setTimeout(() => {
+                    el.remove();
+                    if (activeOrders.size === 0) showEmptyState();
+                    updateCounter();
+                }, 250);
+            }
+        }
+
+        function showEmptyState() {
+            const container = document.getElementById('kitchen-orders');
+            if (!container.querySelector('.empty-kitchen')) {
+                container.innerHTML = `
+                    <div class="empty-kitchen" id="empty-state">
+                        <div class="empty-kitchen-icon">👨‍🍳</div>
+                        <h2>Kitchen Queue is Clear</h2>
+                        <p>New paid orders from QR tables will automatically ring and appear here in real time.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function updateCounter() {
+            document.getElementById('active-count').innerText = `${activeOrders.size} Order${activeOrders.size === 1 ? '' : 's'} Active`;
+        }
+
+        function escapeHtml(str) {
+            return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+    </script>
+</body>
+</html>

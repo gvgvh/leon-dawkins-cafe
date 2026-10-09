@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leon Dawkins Cafe - QR Menu & M-Pesa Ordering</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Main Container Layout -->
+    <div class="app-container">
+        
+        <!-- Left Section: Menu & Products -->
+        <main class="menu-section">
+            
+            <!-- Restaurant Header -->
+            <header class="restaurant-header">
+                <div class="header-content">
+                    <h1>Leon Dawkins Cafe</h1>
+                    <p class="subtitle">Fresh food. Great taste. Fast M-Pesa ordering.</p>
+                </div>
+                <!-- Table Number Display (Read from URL) -->
+                <div class="table-badge">
+                    <span>Table</span>
+                    <strong id="table-number">1</strong>
+                </div>
+            </header>
+
+            <!-- Food Categories Navigation -->
+            <nav class="nav-menu" role="tablist" aria-label="Food categories">
+                <span class="menu-box" aria-hidden="true">Our Menu</span>
+                <button type="button" role="tab" id="tab-All" class="nav-link active" aria-selected="true" onclick="showCategory('All')">All</button>
+                <button type="button" role="tab" id="tab-Breakfast" class="nav-link" aria-selected="false" onclick="showCategory('Breakfast')">Breakfast</button>
+                <button type="button" role="tab" id="tab-Main-Meals" class="nav-link" aria-selected="false" onclick="showCategory('Main Meals')">Main Meals</button>
+                <button type="button" role="tab" id="tab-Grills" class="nav-link" aria-selected="false" onclick="showCategory('Grills')">Grills</button>
+                <button type="button" role="tab" id="tab-Snacks" class="nav-link" aria-selected="false" onclick="showCategory('Snacks')">Snacks</button>
+                <button type="button" role="tab" id="tab-Sides" class="nav-link" aria-selected="false" onclick="showCategory('Sides')">Sides</button>
+                <button type="button" role="tab" id="tab-Drinks" class="nav-link" aria-selected="false" onclick="showCategory('Drinks')">Drinks</button>
+                <button type="button" role="tab" id="tab-Desserts" class="nav-link" aria-selected="false" onclick="showCategory('Desserts')">Desserts</button>
+            </nav>
+
+            <!-- Category Heading -->
+            <h2 id="category-title" class="section-title">Our Menu</h2>
+
+            <!-- Food Cards Container -->
+            <div id="food-container">
+                <!-- Dynamically loaded via script.js -->
+            </div>
+
+        </main>
+
+        <!-- Right Section: Cart Sidebar -->
+        <aside class="cart-section" aria-label="Order summary">
+            <div class="cart-card">
+                <h2>Your Order</h2>
+                <div id="cart-items" class="cart-items-container" aria-live="polite">
+                    <p class="empty-cart-text">Your cart is currently empty.</p>
+                </div>
+
+                <div class="cart-summary">
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <span id="cart-subtotal">KSh 0</span>
+                    </div>
+                    <div class="summary-row total-row">
+                        <span>Total:</span>
+                        <strong id="cart-total">KSh 0</strong>
+                    </div>
+                </div>
+
+                <!-- Live Order Status Banner -->
+                <div id="order-status-banner" class="order-status-banner hidden" role="status" aria-live="polite">
+                    <div class="status-icon" id="status-icon">📲</div>
+                    <div class="status-content">
+                        <strong id="status-headline">Sending M-Pesa Prompt...</strong>
+                        <p id="status-subtext">Check your phone to enter PIN</p>
+                    </div>
+                </div>
+
+                <!-- Checkout Form -->
+                <form id="checkout-form" onsubmit="handleCheckout(event)" aria-label="M-Pesa checkout form">
+                    <div class="form-group">
+                        <label for="customer-name">Your Name</label>
+                        <input type="text" id="customer-name" placeholder="Enter your name" required autocomplete="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="customer-phone">M-Pesa Phone Number</label>
+                        <input type="tel" id="customer-phone" placeholder="0712345678 or 2547..." pattern="^(254|0)[71]\d{8}$" required autocomplete="tel">
+                        <small class="form-hint">Enter Safaricom number to receive the STK PIN prompt</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="order-notes">Special Instructions (Optional)</label>
+                        <textarea id="order-notes" rows="2" placeholder="e.g. No onions, extra hot sauce"></textarea>
+                    </div>
+                    <button type="submit" class="place-order-btn" id="submit-btn" disabled>
+                        Pay with M-Pesa & Place Order
+                    </button>
+                </form>
+
+                <div class="mpesa-badge">
+                    <span>⚡ Secured by Safaricom Daraja M-Pesa</span>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Staff navigation quick links in footer -->
+    <footer class="app-footer">
+        <p>Leon Dawkins Cafe &copy; 2026 &bull; Table <span id="footer-table-num">1</span></p>
+        <div class="staff-links">
+            <a href="/kitchen.html" target="_blank" class="staff-link">🍳 Kitchen View</a>
+            <a href="/admin.html" target="_blank" class="staff-link">📊 Admin Dashboard</a>
+            <a href="/qr-codes.html" target="_blank" class="staff-link">📱 Table QR Generator</a>
+        </div>
+    </footer>
+
+    <!-- Floating Mobile Order Bar -->
+    <a href="#checkout-form" class="mobile-cart-bar hidden" id="mobile-cart-bar" role="button" aria-label="View order in cart" aria-hidden="true" onclick="scrollToOrder(event)">
+        <span class="mobile-cart-info">
+            <span class="mobile-cart-count" id="mobile-cart-count">0 items</span>
+            <span class="mobile-cart-label">View Order</span>
+        </span>
+        <span class="mobile-cart-total" id="mobile-cart-total">KSh 0 &rarr;</span>
+    </a>
+
+    <!-- Scroll Back to Top Button -->
+    <button type="button" class="scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Back to top" title="Back to top">▲</button>
+
+    <!-- Socket.io client (served by server) -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
