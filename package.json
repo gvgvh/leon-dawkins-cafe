@@ -1,7 +1,7 @@
 {
   "name": "leon-dawkins-cafe-mpesa-ordering",
-  "version": "2.0.0",
-  "description": "Production-ready full-stack QR menu, M-Pesa STK Push, kitchen display, and admin dashboard",
+  "version": "2.1.0",
+  "description": "Production-hardened QR menu, M-Pesa STK Push, kitchen display, and admin dashboard",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -13,14 +13,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.6",
-    "express": "^5.3.0",
-    "socket.io": "^4.8.4",
-    "sqlite3": "^5.1.6",
-    "jsonwebtoken": "^9.1.2",
+    "axios": "^1.6.0",
     "bcryptjs": "^2.4.3",
+    "cors": "^2.8.6",
     "dotenv": "^16.3.1",
-    "axios": "^1.6.0"
+    "express": "^5.3.0",
+    "express-rate-limit": "^7.0.0",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.1.2",
+    "socket.io": "^4.8.4",
+    "sqlite3": "^5.1.6"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
